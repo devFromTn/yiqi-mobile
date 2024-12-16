@@ -54,7 +54,7 @@ export type PublicEventType = {
   createdAt: Date
   updatedAt: Date
   customFields?: CustomFieldType[]
-  tickets?: TicketType[]
+  tickets: TicketType[]
   registrations?: number
   organization?: OrganizationType
   heroImage?: string | null

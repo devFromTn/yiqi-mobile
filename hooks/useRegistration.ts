@@ -4,6 +4,7 @@ import trpc from '@/constants/trpc'
 import { PublicEventType } from '@/types/eventTypes'
 import { UserType } from '@/types/UserType'
 import { errorHandler } from '@/helpers/errorHandler'
+import { RegistrationType } from '@/types/RegistrationType'
 
 export const useRegistration = (event: PublicEventType, user?: UserType) => {
   const [ticketSelections, setTicketSelections] = useState<
@@ -11,7 +12,8 @@ export const useRegistration = (event: PublicEventType, user?: UserType) => {
   >({})
   const [isModalVisible, setModalVisible] = useState(false)
   const [isLoadingRegistration, setIsLoadingRegistration] = useState(true)
-  const [existingRegistration, setExistingRegistration] = useState(null)
+  const [existingRegistration, setExistingRegistration] =
+    useState<RegistrationType | null>(null)
   const [currentRegistrationId, setCurrentRegistrationId] = useState<
     string | undefined
   >()
@@ -84,8 +86,6 @@ export const useRegistration = (event: PublicEventType, user?: UserType) => {
         } else {
           setCurrentRegistrationId(result.registration.id)
         }
-      } else {
-        showToast(result.error, { type: 'error' })
       }
     } catch (error) {
       errorHandler(error)

@@ -23,7 +23,7 @@ export const Select = ({
 }: IProps) => {
   const selectedItem = useMemo(
     () => items.find(item => item.value === value),
-    [value]
+    [value, items]
   )
 
   return (

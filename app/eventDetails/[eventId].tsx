@@ -9,33 +9,23 @@ import EventDescription from '@/components/Event/EventDetails/EventDescription'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import LocationMap from '@/components/LocationMap'
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
-import { UserType } from '@/types/UserType'
-import * as SecureStore from 'expo-secure-store'
-import { secureStorageKeys } from '@/constants/SecureStore'
-import { errorHandler } from '@/helpers/errorHandler'
+
 import { ArrowLeft } from 'lucide-react-native'
 import { Colors } from '@/constants/Colors'
 import { PublicEventType } from '@/types/eventTypes'
+import { useAuthContext } from '@/context/AuthContext'
 
 export default function EventDetails() {
   const { eventId } = useLocalSearchParams<{ eventId: string }>()
-  const [user, setUser] = useState<UserType | undefined>()
   const { data, error, isLoading } = trpc.getEvent.useQuery({
     eventId,
     includeTickets: true
   })
   const { t } = useTranslation()
-  useEffect(() => {
-    const getUser = async () =>
-      SecureStore.getItemAsync(secureStorageKeys.USER_INFO)
-        .then(
-          data => data && typeof data == 'string' && setUser(JSON.parse(data))
-        )
-        .catch(errorHandler)
+  const {
+    session: { user }
+  } = useAuthContext()
 
-    getUser()
-  }, [])
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 bg-black justify-center items-center">

@@ -3,7 +3,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Stack, useLocalSearchParams } from 'expo-router'
 
-export default function communityDetails() {
+export default function CommunityDetails() {
   const { communityId } = useLocalSearchParams<{ communityId: string }>()
 
   return (

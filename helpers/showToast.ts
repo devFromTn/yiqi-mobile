@@ -13,7 +13,7 @@ const showToast = (toastMessage: string, options?: ToastProps) => {
     position: Toast.positions.BOTTOM,
     animation: true,
     hideOnPress: true,
-    textColor: type == 'success' ? Colors.dark.text : Colors.light.text,
+    textColor: type === 'success' ? Colors.dark.text : Colors.light.text,
     backgroundColor: getBackgroundColor(type),
     ...toastOptions
   })

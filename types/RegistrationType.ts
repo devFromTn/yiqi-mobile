@@ -10,6 +10,6 @@ export type RegistrationType = {
   updatedAt: Date
   paid: boolean
   paymentId: string | null
-  user: UserType
+  user: Omit<UserType, 'role'>
   tickets: TicketType[]
 }
