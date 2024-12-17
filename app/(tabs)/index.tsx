@@ -15,6 +15,7 @@ export default function Home() {
   const { data: communities } = trpc.getCommunities.useQuery({ limit: 4 })
   const { authenticated } = useCurrentUser()
   const router = useRouter()
+
   const onCallToActionPress = () => {
     if (authenticated) {
       return router.navigate('/events')

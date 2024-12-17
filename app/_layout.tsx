@@ -42,11 +42,12 @@ export default function RootLayout() {
           headers: async () => {
             const token =
               (await SecureStore.getItemAsync(secureStorageKeys.TOKEN)) ?? ''
-            console.log(token)
 
-            return {
-              authorization: `Bearer ${token}`
-            }
+            if (token)
+              return {
+                authorization: `Bearer ${token}`
+              }
+            return {}
           }
         })
       ]

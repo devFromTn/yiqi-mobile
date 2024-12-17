@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as SecureStore from 'expo-secure-store'
 import { UserType } from '@/types/UserType'
 import { secureStorageKeys } from '@/constants/SecureStore'
-import trpc from '@/constants/trpc'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 type Session = {
   user?: UserType
@@ -21,42 +21,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session>({
     authenticated: false
   })
-  const { refetch, data, error } = trpc.fetchUserData.useQuery(undefined, {
-    enabled: false
-  })
-  console.log({ error })
 
   useEffect(() => {
     // Check for token on component mount
     const fetchSession = async () => {
-      const token = await SecureStore.getItemAsync(secureStorageKeys.TOKEN)
-      if (token) {
-        // Trigger fetching user data
-        await refetch()
+      const [token, user] = await Promise.all([
+        SecureStore.getItemAsync(secureStorageKeys.TOKEN),
+        SecureStore.getItemAsync(secureStorageKeys.USER_INFO)
+      ])
+      if (token && user) {
+        setSession({ authenticated: true, user: JSON.parse(user) })
       }
     }
 
     fetchSession()
-  }, [refetch])
-
-  useEffect(() => {
-    if (data) {
-      // Set session once user data is retrieved
-      setSession({ authenticated: true, user: data })
-    }
-  }, [data])
+  }, [])
 
   const signIn = async (user: UserType, token: string) => {
-    await SecureStore.setItemAsync(
-      secureStorageKeys.TOKEN,
-      JSON.stringify(token)
-    )
-    setSession({ authenticated: true, user })
+    try {
+      await Promise.all([
+        SecureStore.setItemAsync(secureStorageKeys.TOKEN, token),
+        SecureStore.setItemAsync(
+          secureStorageKeys.USER_INFO,
+          JSON.stringify(user)
+        )
+      ])
+      setSession({ authenticated: true, user })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const signOut = async () => {
-    setSession({ user: undefined, authenticated: false })
-    await SecureStore.deleteItemAsync(secureStorageKeys.TOKEN)
+    try {
+      setSession({ user: undefined, authenticated: false })
+
+      await Promise.all([
+        SecureStore.deleteItemAsync(secureStorageKeys.TOKEN),
+        SecureStore.deleteItemAsync(secureStorageKeys.USER_INFO),
+        GoogleSignin.signOut()
+      ])
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

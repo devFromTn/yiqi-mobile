@@ -53,10 +53,8 @@ export function useAuth() {
           showToast('Google Play Services are not available.', {
             type: 'error'
           })
-          break
-        default:
-          errorHandler(error)
       }
+      console.log(error)
     }
   }
 
